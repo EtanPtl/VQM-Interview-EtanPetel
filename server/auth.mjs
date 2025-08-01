@@ -46,6 +46,29 @@ router
         }
     });
 
-    router.post(async(req, res) => {
-        
-    })
+    router.post("/SignUp", async(req, res) => {
+        try {
+            // Check if user already exists (no overlapping users)
+            const existingUser = await pool.query("SELECT FROM users WHERE username = $1", [req.body.username]);
+            if (existingUser.rowCount == 0) {
+                // User does not exist, create new user
+                // Make hashpassword since we want to only store hashed passwords in the database
+                const hashedPass = await bcyrpt.hash(req.body.password, 10);
+                const newUserQuery = await pool.query("INSERT INTO users(username, passhash) VALUES ($1, $2) RETURNING username", [req.body.username, hashedPass]);
+                // Update the session for persistence
+                req.session.user = {
+                    username: req.body.username,
+                    id: newUserQuery.rows[0].id
+                };
+                res.json({loggedIn: true, username: req.body.username})
+            } else {
+                // SignUp failed user exists, don't create new user
+                // Let user know the username is taken 
+                res.json({loggedIn: false, status:"Username Taken"})
+            };
+        } catch (error) {
+            console.log(error.message);
+        };
+    });
+
+    export default router;
