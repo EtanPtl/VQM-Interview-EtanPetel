@@ -1,14 +1,49 @@
 "use client";
 import React from "react";
+import { useState, useContext } from "react";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "../lib/utils";
+import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupFormDemo() {
+
+  const [error, setError] = useState(null); 
+  const { setUser }  = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Get data from form 
+    const formData = new FormData(e.target);
+    const vals = Object.fromEntries(formData);
+
     // On submit we will fetch to send info to backend to sign up
-    fetch()
+    fetch("http://localhost:3000/auth/SignUp", {
+        method: "POST",
+        credentials: "include",
+        headers: {"Content-Type": "Application/json"},
+        body: JSON.stringify(vals)
+    })
+    .catch(err => {
+        return;
+    })
+    .then(res => {
+        if (!res || !res.ok || res.status >= 400) {
+            return;
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        setUser({...data});
+        if (data.status) {
+            setError(data.status);
+        } else if (data.loggedIn){
+            navigate("/Queue")
+        }
+        
+    })
     console.log("Form submitted");
   };
 
