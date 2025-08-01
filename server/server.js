@@ -16,7 +16,9 @@ app.use(cors({
     credentials: true,
 }));
 
+
 app.use(express.json());
+//Creating Sessions for persistance (eg. if user reloads page they stay logged in)
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     credentials: true,
@@ -30,8 +32,10 @@ app.use(session({
     }
 }))
 
+// Connecting to auth through /auth adress
 app.use("/auth", auth);
 
+// For users to join the queue
 app.post("/queue", async(req, res) => {
     const { username } = req.session.user
     try {
@@ -42,6 +46,7 @@ app.post("/queue", async(req, res) => {
     }
 })
 
+// To see a specific user in the queue
 app.get("/queue", async(req, res) => {
     try {
         const { id } = req.params;
@@ -52,11 +57,13 @@ app.get("/queue", async(req, res) => {
     }
 });
 
+// To see all users in queue (admin)
 app.get("/all-queue", async(req, res) => {
     const allEntries = await pool.query("SELECT * FROM queue");
     res.json(allEntries.rows);
 })
 
+// To remove someone from queue
 app.delete("/queue", async(req, res) => {
     try {
         const { id } = req.params;
@@ -67,6 +74,7 @@ app.delete("/queue", async(req, res) => {
     }
 });
 
+// Starting the express server
 app.listen(PORT, () => {
     console.log("Server is running on port " + PORT);
 });
