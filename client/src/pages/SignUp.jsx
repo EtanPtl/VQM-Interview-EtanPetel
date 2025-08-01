@@ -1,29 +1,32 @@
 "use client";
 import React from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Label } from "../components/ui/label";
+import { Input } from "../components/ui/input";
 import { cn } from "../lib/utils";
 
-export function SignupFormDemo() {
+export default function SignupFormDemo() {
   const handleSubmit = (e) => {
     e.preventDefault();
+    // On submit we will fetch to send info to backend to sign up
+    fetch()
     console.log("Form submitted");
   };
+
+
   return (
     <div
-      className="shadow-input mx-auto w-full max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-black">
+      className=" mt-30 shadow-input mx-auto w-full max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-black">
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-        Welcome to Aceternity
+        Welcome to QueueApp
       </h2>
       <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-        Login to aceternity if you can because we don&apos;t have a login flow
-        yet
+       Sign Up
       </p>
       <form className="my-8" onSubmit={handleSubmit}>
     
         <LabelInputContainer className="mb-4">
           <Label htmlFor="username">UserName</Label>
-          <Input id="username" placeholder="Username" type="username" name="username"/>
+          <Input id="username" placeholder="Username" type="text" name="username"/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>

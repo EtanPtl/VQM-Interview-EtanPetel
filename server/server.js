@@ -4,7 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./db.mjs";
 import { Server } from "socket.io";
-import { createServer } from "node:http"
+import { createServer } from "node:http";
+import auth from "./auth.mjs";
 
 dotenv.config();
 const app = express();
