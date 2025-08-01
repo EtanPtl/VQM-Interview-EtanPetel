@@ -2,6 +2,7 @@ import express from "express";
 import session from "express-session"
 import cors from "cors";
 import dotenv from "dotenv";
+import pool from "./db.mjs";
 import { Server } from "socket.io";
 import { createServer } from "node:http"
 
