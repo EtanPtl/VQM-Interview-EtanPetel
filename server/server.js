@@ -66,7 +66,7 @@ app.post("/queue", async(req, res) => {
     const { username } = req.session.user
   
     try {
-        const newEntry = await pool.query("INSERT INTO queue (username) VALUE ($1) ON CONFLICT (username) DO NOTHING", [username]);
+        const newEntry = await pool.query("INSERT INTO queue (username) VALUES ($1) ON CONFLICT (username) DO NOTHING", [username]);
         res.json(newEntry);
     } catch (error) {
         console.log(error.message);

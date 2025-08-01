@@ -7,9 +7,9 @@ const socket = io('ws://localhost:3000');
 const Queue = () => {
     const { user } = useContext(AuthContext);
     socket.on('message', (data) => {
-        const li = document.createElement('li');
-        li.textContent = data;
-        document.querySelector('ul').appendChild(li);
+        console.log(data);
+        const h2 = document.querySelector('h2');
+        h2.textContent = data;
     })
 
     const HandleClick = (e) => {
@@ -29,8 +29,8 @@ const Queue = () => {
         <button onClick={HandleClick} className=' position: absolute font-bold justify-center text-white text-5xl bg-black rounded-3xl px-4 py-2 cursor-pointer'> 
             Join The Queue
         </button>
-        <ul className='mb-5'> 
-        </ul>
+        <h2 className='mb-5'> 
+        </h2>
     </div>
     )
 }
