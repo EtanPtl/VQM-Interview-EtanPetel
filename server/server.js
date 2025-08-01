@@ -11,6 +11,30 @@ dotenv.config();
 const app = express();
 // Hide Port in .env with fall back
 const PORT = process.env.PORT || 3000; 
+const server = createServer(app);
+const io = new Server(server, {
+    // Use cors to only allow access from specific origins (not anyone can acess)
+    cors: {
+        origin: process.env.NODE_ENV === "production" ? false : ["http://localhost:5173", "http://127.0.0.1:5173"]
+    }
+});
+
+io.on('connection', (socket) => {
+    // Connect users to Socket.IO, log the id to see distinct users
+    console.log(`User connceted ${socket.id}`);
+    socket.on('message', (data) =>{
+        console.log(data);
+        // Send only first 5 chars of id since its long and will still be unique with 5 chars
+        io.emit('message', `${socket.id.substring(0,5)}: ${data}`);
+    });
+    socket.on('disconnect', () => {
+        console.log("user disconnected")
+    }); 
+});
+
+server.listen(PORT, () => {
+    console.log("Listening on Port " + PORT);
+});
 
 app.use(cors({
     origin: "http://localhost:5173",
