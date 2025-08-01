@@ -15,6 +15,20 @@ app.use(cors({
     credentials: true,
 }));
 
+app.use(express.json());
+app.use(session({
+    secret: process.env.COOKIE_SECRET,
+    credentials: true,
+    name: "sid",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.environment === "production" ? "true" : "auto",
+        httpOnly: true,
+        sameSite: process.env.environment === "production" ? "none" : "lax",
+    }
+}))
+
 app.use("/auth", auth);
 
 app.post("/queue", async(req, res) => {
@@ -41,3 +55,18 @@ app.get("/all-queue", async(req, res) => {
     const allEntries = await pool.query("SELECT * FROM queue");
     res.json(allEntries.rows);
 })
+
+app.delete("/queue", async(req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteEntry = await pool.query("DELETE FROM queue WHERE queue_id = $1", [id]);
+        res.json("Entry deleted from queue");
+    } catch (error) {
+        console.log(error.message);
+    }
+});
+
+app.listen(PORT, () => {
+    console.log("Server is running on port " + PORT);
+});
+
