@@ -26,10 +26,11 @@ io.on('connection', (socket) => {
         console.log(data);
         // Send only first 5 chars of id since its long and will still be unique with 5 chars
         io.emit('message', `${socket.id.substring(0,5)}: ${data}`);
+        
     });
     socket.on('disconnect', () => {
         console.log("user disconnected")
-    }); 
+    });
 });
 
 server.listen(PORT, () => {
@@ -63,8 +64,9 @@ app.use("/auth", auth);
 // For users to join the queue
 app.post("/queue", async(req, res) => {
     const { username } = req.session.user
+  
     try {
-        const newEntry = await pool.query("INSERT INTO queue (username) VALUE($1)", [username]);
+        const newEntry = await pool.query("INSERT INTO queue (username) VALUE ($1) ON CONFLICT (username) DO NOTHING", [username]);
         res.json(newEntry);
     } catch (error) {
         console.log(error.message);
